@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matching Entrepreneurs and Interns</title>
+<style>
+    .container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+    }
+
+    .card {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 20px;
+        width: 200px;
+        text-align: center;
+    }
+
+    .card img {
+        max-width: 100px;
+        max-height: 100px;
+        border-radius: 50%;
+        margin-bottom: 10px;
+    }
+    .container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+}
+
+.card {
+  margin-bottom: 20px;
+}
+
+button {
+  padding: 15px 35px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+</style>
+</head>
+<body>
+    <!-- ปุ่มเพื่อเปิด/ปิดแบบฟอร์มกรอกข้อมูล -->
+    <div style="position: fixed; top: 0; right: 0;">
+        <button onclick="toggleDataForm()">กรอกข้อมูล</button>
+    </div>
+
+    <!-- แบบฟอร์มกรอกข้อมูล -->
+    <div id="dataEntry" style="display: none;">
+        <form>
+            <label for="id">รหัส:</label><br>
+            <input type="text" id="id" name="id"><br>
+            <label for="name">ชื่อ:</label><br>
+            <input type="text" id="name" name="name"><br>
+            <label for="skills">ทักษะ:</label><br>
+            <input type="text" id="skills" name="skills"><br>
+            <label for="image">รูปภาพ:</label><br>
+            <input type="file" id="image" name="image"><br><br>
+            <button type="button" onclick="saveData(); toggleDataForm();">บันทึกข้อมูล</button>
+        </form>
+    </div>
+
+    <!-- การ์ดสำหรับแสดงผลผู้ประกอบการและนักศึกษาฝึกงานที่จับคู่กัน -->
+    <div class="container">
+        <div class="card" id="entrepreneurCard">
+            <h2>ผู้ประกอบการ</h2>
+            <img id="entrepreneurImage" src="" alt="">
+            <p id="entrepreneurName"></p>
+            <p id="entrepreneurExpertise"></p>
+        </div>
+        <div class="card" id="internCard">
+            <h2>นักศึกษาฝึกงาน</h2>
+            <img id="internImage" src="" alt="">
+            <p id="internName"></p>
+            <p id="internInterest"></p>
+        </div>
+        <!-- ปุ่มเรียกใช้ฟังก์ชันการจับคู่ -->
+        <button onclick="match()">จับคู่</button>
+    </div>
+    
+
+<script>
+    // ข้อมูลผู้ประกอบการและนักศึกษาฝึกงาน (ข้อมูลตัวอย่าง)
+    const entrepreneurs = [
+        { name: "John Doe", expertise: ["การตลาด", "การเงิน"], image: "1.jpg" },
+        { name: "Jane Smith", expertise: ["เทคโนโลยี", "วิศวกรรม"], image: "2.jpg" },
+        // เพิ่มผู้ประกอบการเพิ่มเติมตามต้องการ
+    ];
+
+    const interns = [
+        { name: "Alice Johnson", interest: ["การตลาด", "การเงิน"], image: "3.jpg" },
+        { name: "Bob Williams", interest: ["เทคโนโลยี", "วิศวกรรม"], image: "5.jpg" },
+        // เพิ่มนักศึกษาฝึกงานเพิ่มเติมตามต้องการ
+    ];
+
+    // ฟังก์ชันสำหรับการสุ่มหมายเลขดัชนี
+    function getRandomIndex(max) {
+        return Math.floor(Math.random() * max);
+    }
+
+    // ฟังก์ชันสำหรับการจับคู่ผู้ประกอบการและนักศึกษาฝึกงาน
+    function match() {
+        const entrepreneurIndex = getRandomIndex(entrepreneurs.length);
+        const internIndex = getRandomIndex(interns.length);
+
+        const entrepreneur = entrepreneurs[entrepreneurIndex];
+        const intern = interns[internIndex];
+
+        // แสดงผลการจับคู่
+        displayMatch(entrepreneur, intern);
+    }
+
+    // ฟังก์ชันสำหรับแสดงผลการจับคู่
+    function displayMatch(entrepreneur, intern) {
+        document.getElementById("entrepreneurName").innerText = entrepreneur.name;
+        document.getElementById("entrepreneurExpertise").innerText = "ความเชี่ยวชาญ: " + entrepreneur.expertise.join(", ");
+        document.getElementById("entrepreneurImage").src = entrepreneur.image;
+
+        document.getElementById("internName").innerText = intern.name;
+        document.getElementById("internInterest").innerText = "ความสนใจ: " + intern.interest.join(", ");
+        document.getElementById("internImage").src = intern.image;
+    }
+
+    // ฟังก์ชันสำหรับเปิด/ปิดแบบฟอร์มกรอกข้อมูล
+    function toggleDataForm() {
+        var dataForm = document.getElementById('dataEntry');
+        if (dataForm.style.display === 'none') {
+            dataForm.style.display = 'block';
+        } else {
+            dataForm.style.display = 'none';
+        }
+    }
+
+    // ฟังก์ชันสำหรับการบันทึกข้อมูล
+    function saveData() {
+        // รับค่าจากแบบฟอร์ม
+        var id = document.getElementById('id').value;
+        var name = document.getElementById('name').value;
+        var skills = document.getElementById('skills').value;
+        var image = document.getElementById('image').files[0]; // รับไฟล์รูปภาพที่เลือก
+
+        // เตรียมข้อมูลเป็นออบเจกต์
+        var data = {
+            id: id,
+            name: name,
+            skills: skills,
+            image: image.name // เก็บชื่อไฟล์ของรูปภาพ
+        };
+
+        // บันทึกข้อมูลลงใน localStorage
+        var existingData = JSON.parse(localStorage.getItem('userData')) || { users: [] };
+        existingData.users.push(data);
+        localStorage.setItem('userData', JSON.stringify(existingData));
+
+        // แจ้งเตือนบันทึกข้อมูลเสร็จสมบูรณ์
+        alert('บันทึกข้อมูลเรียบร้อยแล้ว');
+
+        // สร้างข้อมูล JSON
+        var jsonData = JSON.stringify(existingData);
+
+        // สร้าง Blob จากข้อมูล JSON
+        var blob = new Blob([jsonData], {type: "application/json"});
+
+        // สร้าง URL สำหรับ Blob
+        var url = URL.createObjectURL(blob);
+
+        // สร้าง element ปุ่มลิงก์
+        var a = document.createElement("a");
+        a.href = url;
+        a.download = "Data.json";
+        document.body.appendChild(a);
+
+        // คลิกลิงก์เพื่อดาวน์โหลดไฟล์ JSON
+        a.click();
+
+        // ทำความสะอาด
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        // เปิด/ปิดแบบฟอร์มกรอกข้อมูล
+        toggleDataForm();
+    }
+</script>
+</body>
+</html>
